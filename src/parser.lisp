@@ -27,4 +27,5 @@
     content))
 
 (defun parse-string (string)
+  "Parse a ParenML string into an S-expression."
   (parse 'sexp string))

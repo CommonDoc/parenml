@@ -4,24 +4,24 @@
 (in-package :parenml-test)
 
 (def-suite tests
-  :description "parenml tests.")
+  :description "ParenML tests.")
 (in-suite tests)
 
+(defun equal-parse (string sexp)
+  (equal (parenml.parser:parse-string string) sexp))
+
 (test parser
-  (is
-   (equal (parenml.parser:parse-string "test")
-          "test"))
-  (is
-   (equal (parenml.parser:parse-string ":test")
-          :|test|))
-  (is
-   (equal (parenml.parser:parse-string "(1 2 3)")
-          (list "1 2 3")))
-  (is
-   (equal (parenml.parser:parse-string "(a (b (c)))")
-          (list "a " (list "b " (list "c")))))
-  (is
-   (equal (parenml.parser:parse-string "(a (b (c) d) e)")
-          (list "a " (list "b " (list "c") " d") " e"))))
+  (is-true
+   (equal-parse "test" "test"))
+  (is-true
+   (equal-parse ":test" :|test|))
+  (is-true
+   (equal-parse "(1 2 3)" (list "1 2 3")))
+  (is-true
+   (equal-parse "(a (b (c)))"
+                (list "a " (list "b " (list "c")))))
+  (is-true
+   (equal-parse "(a (b (c) d) e)"
+                (list "a " (list "b " (list "c") " d") " e"))))
 
 (run! 'tests)
