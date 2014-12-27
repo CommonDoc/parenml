@@ -24,4 +24,14 @@
    (equal-parse "(a (b (c) d) e)"
                 (list "a " (list "b " (list "c") " d") " e"))))
 
+(defun equal-transform (input output)
+  (equal (parenml.transform:transform input) output))
+
+(test transform
+  (is-true
+   (equal (common-doc:text (parenml.transform:transform "test"))
+          "test"))
+  (signals simple-error
+    (parenml.transform:transform :test)))
+
 (run! 'tests)
