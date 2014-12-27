@@ -1,9 +1,6 @@
 (in-package :cl-user)
 (defpackage parenml.transform
-  (:use :cl)
-  (:import-from :common-doc
-                :doc
-                :<text-node>)
+  (:use :cl :common-doc)
   (:export :transform)
   (:documentation "Turn parser output into a CommonDoc document."))
 (in-package :parenml.transform)
@@ -18,12 +15,16 @@
 (defmethod transform ((list list))
   "Transform a list."
   (let ((first (first list)))
-    (assert (and (symbolp first)
-                 (eq (symbol-package first) (find-package :keyword))))
-    (let ((operator (gethash first *transforms*)))
-      (if operator
-          (funcall operator (rest list))
-          (error "Unknown operator: ~A." operator)))))
+    (cond
+      ((symbolp list)
+        (let ((operator (gethash first *transforms*)))
+          (if operator
+              (funcall operator (rest list))
+              (error "Unknown operator: ~A." operator))))
+      ((stringp first)
+       (transform (cons :text list)))
+      (t
+       (error "Invalid first element of a list: ~A." first)))))
 
 (defmethod transform ((string string))
   "Transform a string."
@@ -42,3 +43,68 @@
              (destructuring-bind ,args list
                ,@body))))
 
+(defmacro define-content-transform (keyword class)
+  `(define-transform ,keyword (&rest children)
+     (make-instance ',class
+                    :children (loop for child in children collecting
+                                (transform child)))))
+
+;; Text blocks
+
+(define-transform :|text| (&rest content)
+ ;; Text blocks are just groupings of text
+ (loop for elem in content collecting (transform elem)))
+
+;; Paragraphs
+
+(define-transform :|p| (&rest blocks)
+  ;; The input to this is a list of elements, each of which is either a plain
+  ;; old fashioned list or a block of some kind
+  (loop for block in blocks collecting
+    (let ((transformed (transform block)))
+      (if (listp transformed)
+          (make-instance '<paragraph>
+                         :children transformed)
+          transformed))))
+
+;; Markup
+
+(define-content-transform :|b| <bold>)
+(define-content-transform :|i| <italic>)
+(define-content-transform :|u| <underline>)
+(define-content-transform :|strike| <strikethrough>)
+(define-content-transform :|code| <code>)
+(define-content-transform :|sup| <superscript>)
+(define-content-transform :|sub| <subscript>)
+
+;; Quotes
+
+(define-content-transform :|q| <inline-quote>)
+(define-content-transform :|quote| <block-quote>)
+
+;; Lists
+
+(define-content-transform :|item| <list-item>)
+
+(define-transform :|def| (term &rest definition)
+  (make-instance '<definition>
+                 :term (emit term)
+                 :definition (emit definition)))
+
+(define-transform :|list| (&rest items)
+  (make-instance '<unordered-list>
+                 :items (emit items)))
+
+(define-transform :|olist| (&rest items)
+  (make-instance '<ordered-list>
+                 :items (emit items)))
+
+(define-transform :|deflist| (&rest items)
+  (make-instance '<definition-list>
+                 :items (emit items)))
+
+;; Figures
+
+;; Tables
+
+;; Structure
