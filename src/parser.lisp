@@ -1,7 +1,8 @@
 (in-package :cl-user)
 (defpackage parenml.parser
   (:use :cl :esrap)
-  (:export :parse-string))
+  (:export :parse-string)
+  (:documentation "Parse ParenML input into an S-expression."))
 (in-package :parenml.parser)
 
 (defrule whitespace (+ (or #\Space #\Tab #\Newline))
