@@ -96,12 +96,4 @@
             (equal (common-doc:text (first (common-doc:children cell)))
                    " 1")))))))
 
-(test section
-  (let* ((input
-           "(:section (:title (Section)))")
-         (parsed (parenml.parser:parse-string input))
-         (document (parenml.transform:transform parsed)))
-    (is-true
-     (typep document 'common-doc:<section>))))
-
 (run! 'tests)

@@ -122,13 +122,3 @@
                  :rows
                  (loop for row in rows collecting
                    (transform row))))
-
-;; Structure
-
-(define-transform :|section| (key &rest children)
-  (let ((title (transform title))
-        (children (loop for child in children collecting
-                    (transform child))))
-    (make-instance '<section> :title title
-                              :reference reference
-                              :children children)))
