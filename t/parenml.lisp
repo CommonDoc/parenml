@@ -49,7 +49,9 @@
    (equal (common-doc:text (parenml.transform:transform "test"))
           "test"))
   (signals simple-error
-    (parenml.transform:transform :test))
+    (parenml.transform:transform :test)))
+
+(test markup
   (is-true
    (test-markup-transform :|b| common-doc:<bold>))
   (is-true
@@ -68,5 +70,30 @@
    (test-markup-transform :|q| common-doc:<inline-quote>))
   (is-true
    (test-markup-transform :|quote| common-doc:<block-quote>)))
+
+(test table
+  (let* ((input
+           "(:table (:row (:cell 1) (:cell 2) (:cell 3)))")
+         (parsed (parenml.parser:parse-string input))
+         (document (parenml.transform:transform parsed)))
+    (is-true
+     (typep document 'common-doc:<table>))
+    (let ((rows (remove-if-not
+                 #'(lambda (node)
+                     (typep node 'common-doc:<row>))
+                 (common-doc:rows document))))
+      (is
+       (equal (length rows) 1))
+      (let* ((row (first rows))
+             (cells (remove-if-not
+                     #'(lambda (node)
+                         (typep node 'common-doc:<cell>))
+                     (common-doc:cells row))))
+        (is
+         (equal (length cells) 3))
+        (let ((cell (first cells)))
+          (finishes
+            (equal (common-doc:text (first (common-doc:children cell)))
+                   " 1")))))))
 
 (run! 'tests)

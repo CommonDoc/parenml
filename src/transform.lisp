@@ -82,6 +82,8 @@
 (define-content-transform :|q| <inline-quote>)
 (define-content-transform :|quote| <block-quote>)
 
+;; Links
+
 ;; Lists
 
 (define-content-transform :|item| <list-item>)
@@ -106,5 +108,19 @@
 ;; Figures
 
 ;; Tables
+
+(define-content-transform :|cell| <cell>)
+
+(define-transform :|row| (&rest cells)
+  (make-instance '<row>
+                 :cells
+                 (loop for cell in cells collecting
+                   (transform cell))))
+
+(define-transform :|table| (&rest rows)
+  (make-instance '<table>
+                 :rows
+                 (loop for row in rows collecting
+                   (transform row))))
 
 ;; Structure
