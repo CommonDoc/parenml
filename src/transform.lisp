@@ -16,13 +16,13 @@
   "Transform a list."
   (let ((first (first list)))
     (cond
-      ((symbolp list)
+      ((keywordp first)
         (let ((operator (gethash first *transforms*)))
           (if operator
               (funcall operator (rest list))
               (error "Unknown operator: ~A." operator))))
       ((stringp first)
-       (transform (cons :text list)))
+       (transform (cons :|text| list)))
       (t
        (error "Invalid first element of a list: ~A." first)))))
 
@@ -88,20 +88,20 @@
 
 (define-transform :|def| (term &rest definition)
   (make-instance '<definition>
-                 :term (emit term)
-                 :definition (emit definition)))
+                 :term (transform term)
+                 :definition (transform definition)))
 
 (define-transform :|list| (&rest items)
   (make-instance '<unordered-list>
-                 :items (emit items)))
+                 :items (transform items)))
 
 (define-transform :|olist| (&rest items)
   (make-instance '<ordered-list>
-                 :items (emit items)))
+                 :items (transform items)))
 
 (define-transform :|deflist| (&rest items)
   (make-instance '<definition-list>
-                 :items (emit items)))
+                 :items (transform items)))
 
 ;; Figures
 
