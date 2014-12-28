@@ -9,7 +9,8 @@
                 :serial t
                 :components
                 ((:file "parser")
-                 (:file "transform"))))
+                 (:file "transform")
+                 (:file "emitter"))))
   :description "S-expression markup language."
   :long-description
   #.(uiop:read-file-string
