@@ -34,7 +34,7 @@
   (is-true
    (equal-parse "test" "test"))
   (is-true
-   (equal-parse ":test" :|test|))
+   (equal-parse ":test" :test))
   (is-true
    (equal-parse "(1 2 3)" (list "1 2 3")))
   (is-true
@@ -53,23 +53,23 @@
 
 (test markup
   (is-true
-   (test-markup-transform :|b| common-doc:<bold>))
+   (test-markup-transform :b common-doc:<bold>))
   (is-true
-   (test-markup-transform :|i| common-doc:<italic>))
+   (test-markup-transform :i common-doc:<italic>))
   (is-true
-   (test-markup-transform :|u| common-doc:<underline>))
+   (test-markup-transform :u common-doc:<underline>))
   (is-true
-   (test-markup-transform :|strike| common-doc:<strikethrough>))
+   (test-markup-transform :strike common-doc:<strikethrough>))
   (is-true
-   (test-markup-transform :|code| common-doc:<code>))
+   (test-markup-transform :code common-doc:<code>))
   (is-true
-   (test-markup-transform :|sup| common-doc:<superscript>))
+   (test-markup-transform :sup common-doc:<superscript>))
   (is-true
-   (test-markup-transform :|sub| common-doc:<subscript>))
+   (test-markup-transform :sub common-doc:<subscript>))
   (is-true
-   (test-markup-transform :|q| common-doc:<inline-quote>))
+   (test-markup-transform :q common-doc:<inline-quote>))
   (is-true
-   (test-markup-transform :|quote| common-doc:<block-quote>)))
+   (test-markup-transform :quote common-doc:<block-quote>)))
 
 (test table
   (let* ((input

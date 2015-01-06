@@ -15,7 +15,7 @@
 (defrule keyword (and #\: (+ (not (or #\( #\) whitespace))))
   (:destructure (colon text)
     (declare (ignore colon))
-    (intern (text text) :keyword)))
+    (intern (string-upcase (text text)) :keyword)))
 
 (defrule list (and #\( (* sexp) #\))
   (:destructure (open items close)

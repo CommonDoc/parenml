@@ -22,7 +22,7 @@
               (funcall operator (rest list))
               (error "Unknown operator: ~A." operator))))
       ((stringp first)
-       (transform (cons :|text| list)))
+       (transform (cons :text list)))
       (t
        (error "Invalid first element of a list: ~A." first)))))
 
@@ -51,13 +51,13 @@
 
 ;; Text blocks
 
-(define-transform :|text| (&rest content)
+(define-transform :text (&rest content)
  ;; Text blocks are just groupings of text
  (loop for elem in content collecting (transform elem)))
 
 ;; Paragraphs
 
-(define-transform :|p| (&rest blocks)
+(define-transform :p (&rest blocks)
   ;; The input to this is a list of elements, each of which is either a plain
   ;; old fashioned list or a block of some kind
   (loop for block in blocks collecting
@@ -69,39 +69,39 @@
 
 ;; Markup
 
-(define-content-transform :|b| <bold>)
-(define-content-transform :|i| <italic>)
-(define-content-transform :|u| <underline>)
-(define-content-transform :|strike| <strikethrough>)
-(define-content-transform :|code| <code>)
-(define-content-transform :|sup| <superscript>)
-(define-content-transform :|sub| <subscript>)
+(define-content-transform :b <bold>)
+(define-content-transform :i <italic>)
+(define-content-transform :u <underline>)
+(define-content-transform :strike <strikethrough>)
+(define-content-transform :code <code>)
+(define-content-transform :sup <superscript>)
+(define-content-transform :sub <subscript>)
 
 ;; Quotes
 
-(define-content-transform :|q| <inline-quote>)
-(define-content-transform :|quote| <block-quote>)
+(define-content-transform :q <inline-quote>)
+(define-content-transform :quote <block-quote>)
 
 ;; Links
 
 ;; Lists
 
-(define-content-transform :|item| <list-item>)
+(define-content-transform :item <list-item>)
 
-(define-transform :|def| (term &rest definition)
+(define-transform :def (term &rest definition)
   (make-instance '<definition>
                  :term (transform term)
                  :definition (transform definition)))
 
-(define-transform :|list| (&rest items)
+(define-transform :list (&rest items)
   (make-instance '<unordered-list>
                  :items (transform items)))
 
-(define-transform :|olist| (&rest items)
+(define-transform :olist (&rest items)
   (make-instance '<ordered-list>
                  :items (transform items)))
 
-(define-transform :|deflist| (&rest items)
+(define-transform :deflist (&rest items)
   (make-instance '<definition-list>
                  :items (transform items)))
 
@@ -109,15 +109,15 @@
 
 ;; Tables
 
-(define-content-transform :|cell| <cell>)
+(define-content-transform :cell <cell>)
 
-(define-transform :|row| (&rest cells)
+(define-transform :row (&rest cells)
   (make-instance '<row>
                  :cells
                  (loop for cell in cells collecting
                    (transform cell))))
 
-(define-transform :|table| (&rest rows)
+(define-transform :table (&rest rows)
   (make-instance '<table>
                  :rows
                  (loop for row in rows collecting
