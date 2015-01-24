@@ -4,14 +4,12 @@
   :license "MIT"
   :homepage "https://github.com/CommonDoc/parenml"
   :version "0.1"
-  :depends-on (:common-doc
+  :depends-on (:common-doc-plump
                :esrap)
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "parser")
-                 (:file "transform")
-                 (:file "emitter"))))
+                ((:file "parser"))))
   :description "S-expression markup language."
   :long-description
   #.(uiop:read-file-string
