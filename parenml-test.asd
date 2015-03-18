@@ -6,4 +6,5 @@
   :components ((:module "t"
                 :serial t
                 :components
-                ((:file "parenml")))))
+                ((:file "parser")
+                 (:file "parenml")))))
