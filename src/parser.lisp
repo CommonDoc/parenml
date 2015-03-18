@@ -8,22 +8,28 @@
 (defrule whitespace (+ (or #\Space #\Tab #\Newline))
   (:constant nil))
 
-(defrule atom (+ (not (or #\( #\))))
+(defrule valid-char (not (or whitespace #\( #\))))
+
+(defrule atom (+ valid-char)
   (:lambda (text)
-    (text text)))
+    (let* ((text (text text))
+           (keyword (char= (elt text 0) #\:)))
+      (list :type (if keyword
+                      :keyword
+                      :atom)
+            :value (if keyword
+                       (subseq text 1)
+                       text)))))
 
-(defrule keyword (and #\: (+ (not (or #\( #\) whitespace))))
-  (:destructure (colon text)
-    (declare (ignore colon))
-    (intern (text text) :keyword)))
+(defrule list (and #\( (* sexp) (? whitespace) #\))
+ (:destructure (open items ws close)
+   (declare (ignore open ws close))
+    (list :type :list
+          :value items)))
 
-(defrule list (and #\( (* sexp) #\))
-  (:destructure (open items close)
-    (declare (ignore open close))
-    items))
-
-(defrule sexp (and (or list keyword atom))
-  (:destructure (content)
+(defrule sexp (and (? whitespace) (or list atom) (? whitespace))
+  (:destructure (left-ws content right-ws)
+    (declare (ignore left-ws right-ws))
     content))
 
 (defun parse-string (string)
